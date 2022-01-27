@@ -134,7 +134,17 @@ end
 function recurse!(ir, to = self)
   for (x, st) in ir
     isexpr(st.expr, :call) || continue
-    ir[x] = Expr(:call, to, st.expr.args...)
+    if length(st.expr.args) ≥ 2 &&
+       st.expr.args[1] == GlobalRef(Core, :_apply_iterate) &&
+       st.expr.args[2] == GlobalRef(Base, :iterate)
+        funcarg = insert!(ir, x, xcall(:tuple, st.expr.args[3]))
+        ir[x] = xcall(Core, :_apply, to, funcarg, st.expr.args[4:end]...)
+    elseif st.expr.args[1] == GlobalRef(Core, :_apply)
+        funcarg = insert!(ir, x, xcall(:tuple, st.expr.args[2]))
+        ir[x] = xcall(Core, :_apply, to, funcarg, st.expr.args[3:end]...)
+    else
+        ir[x] = Expr(:call, to, st.expr.args...)
+    end
   end
   return ir
 end

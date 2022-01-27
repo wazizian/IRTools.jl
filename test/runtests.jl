@@ -14,6 +14,10 @@ end
   include("reflection.jl")
 end
 
+@testset "Recurse" begin
+  include("recurse.jl")
+end
+
 @testset "Compiler" begin
   include("compiler.jl")
 end
