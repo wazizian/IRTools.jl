@@ -41,7 +41,6 @@ function slots!(ir::IR)
         ϕ = phislot(br.block, i)
         if val in keys(b) && !isexpr(b[val].expr, :(=))
           b[val] = :($ϕ = $(b[val].expr))
-          slots[val] = ϕ
         else
           push!(b, :($ϕ = $val))
         end

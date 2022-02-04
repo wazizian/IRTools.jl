@@ -39,6 +39,17 @@ foo(x) = y = x > 0 ? x + 1 : x - 1
 
 @test passthrough(() -> [1, 2, 3]) == [1, 2, 3]
 
+function f_while(x)
+  i = x
+  while i > 0
+      i -= 1
+  end
+  return x
+end
+
+@test roundtrip(f_while, 1) == 1
+@test passthrough(f_while, 1) == 1
+
 function err(f)
   try
     f()
